@@ -33,7 +33,8 @@ void MAXreg_wr(BYTE reg, BYTE val) {
 	//select MAX3421E (may not be necessary if you are using SPI peripheral)
 	char temp_reg = reg+2;
 	alt_u8 buffer [2] = {temp_reg,val};
-	int status = alt_avalon_spi_command(_PIO_BASE_H_, 0,2, buffer, 0, NULL, 0);
+	alt_u8 * ptr = NULL;
+	int status = alt_avalon_spi_command(_PIO_BASE_H_, 0,2, buffer, 0, ptr, 0);
 	//write reg + 2 via SPI
 
 	//write val via SPI
@@ -54,11 +55,12 @@ BYTE* MAXbytes_wr(BYTE reg, BYTE nbytes, BYTE* data) {
 	int status = 0;
 	//write reg + 2 via SPI
 	alt_u8 temp_reg = reg + 2;
-	status = alt_avalon_spi_command(_PIO_BASE_H_, 0, 1, &temp_reg, 0, NULL, 0);
+	alt_u8 * ptr = NULL;
+	status = alt_avalon_spi_command(_PIO_BASE_H_, 0, 1, &temp_reg, 0, ptr, ALT_AVALON_SPI_COMMAND_MERGE);
 	if (status < 0){
 		printf("ERROR FROM MULTIPLE_BYTE WRITE");
 	}
-	status = alt_avalon_spi_command(_PIO_BASE_H_, 0, nbytes, data, 0, NULL, 0);
+	status = alt_avalon_spi_command(_PIO_BASE_H_, 0, nbytes, data, 0, ptr, 0);
 	if (status < 0){
 		printf("ERROR FROM MULTIPLE_BYTE WRITE");
 	}
@@ -81,8 +83,8 @@ BYTE MAXreg_rd(BYTE reg) {
 //	alt_u8  * read_data;
 //	read_data = (alt_u8*)malloc(sizeof(alt_u8));
 //	alt_u8 temp_val = 0;
-	alt_u8 read_data = 0;
-	int status = alt_avalon_spi_command(_PIO_BASE_H_, 0, 1, &reg, 0, NULL, 0);
+	BYTE read_data;
+	int status = alt_avalon_spi_command(_PIO_BASE_H_, 0, 1, &reg, 0, 0, ALT_AVALON_SPI_COMMAND_MERGE);
 	if (status < 0){
 		printf("ERROR FROM READ REGISTER FROM SPI");
 	}
@@ -91,7 +93,7 @@ BYTE MAXreg_rd(BYTE reg) {
 //			printf("ERROR FROM READ REGISTER FROM SPI");
 //		}
 //	*read_data = temp_val;
-	status = alt_avalon_spi_command(_PIO_BASE_H_, 0,0 , NULL, 1, &read_data, 1);
+	status = alt_avalon_spi_command(_PIO_BASE_H_, 0,0 , 0, 1, &read_data, 0);
 	if (status < 0){
 			printf("ERROR FROM READ REGISTER FROM SPI");
 		}
@@ -109,11 +111,12 @@ BYTE* MAXbytes_rd(BYTE reg, BYTE nbytes, BYTE* data) {
 	//select MAX3421E (may not be necessary if you are using SPI peripheral)
 
 	int status = 0;
-	status = alt_avalon_spi_command(_PIO_BASE_H_, 0, 1, &reg, 0, NULL, 0);
+	alt_u8 * ptr = NULL;
+	status = alt_avalon_spi_command(_PIO_BASE_H_, 0, 1, &reg, 0, ptr, ALT_AVALON_SPI_COMMAND_MERGE);
 	if (status < 0){
 		printf("ERROR FROM MULTIPLE_BYTE WRITE");
 	}
-	status = alt_avalon_spi_command(_PIO_BASE_H_, 0, 0, NULL, nbytes, data, 0);
+	status = alt_avalon_spi_command(_PIO_BASE_H_, 0, 0, ptr, nbytes, data, 0);
 		if (status < 0){
 			printf("ERROR FROM MULTIPLE_BYTE WRITE");
 		}

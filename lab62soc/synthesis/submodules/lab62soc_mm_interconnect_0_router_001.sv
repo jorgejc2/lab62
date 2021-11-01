@@ -136,8 +136,9 @@ module lab62soc_mm_interconnect_0_router_001
     // -------------------------------------------------------
     localparam PAD0 = log2ceil(64'h8000000 - 64'h4000000); 
     localparam PAD1 = log2ceil(64'h8001000 - 64'h8000800); 
-    localparam PAD2 = log2ceil(64'h8001160 - 64'h8001150); 
-    localparam PAD3 = log2ceil(64'h8001178 - 64'h8001170); 
+    localparam PAD2 = log2ceil(64'h80010c0 - 64'h80010a0); 
+    localparam PAD3 = log2ceil(64'h8001160 - 64'h8001150); 
+    localparam PAD4 = log2ceil(64'h8001178 - 64'h8001170); 
     // -------------------------------------------------------
     // Work out which address bits are significant based on the
     // address range of the slaves. If the required width is too
@@ -198,25 +199,31 @@ module lab62soc_mm_interconnect_0_router_001
 
     // ( 0x4000000 .. 0x8000000 )
     if ( {address[RG:PAD0],{PAD0{1'b0}}} == 28'h4000000   ) begin
-            src_channel = 15'b1000;
+            src_channel = 15'b01000;
             src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 8;
     end
 
     // ( 0x8000800 .. 0x8001000 )
     if ( {address[RG:PAD1],{PAD1{1'b0}}} == 28'h8000800   ) begin
-            src_channel = 15'b0010;
+            src_channel = 15'b00010;
             src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 6;
     end
 
+    // ( 0x80010a0 .. 0x80010c0 )
+    if ( {address[RG:PAD2],{PAD2{1'b0}}} == 28'h80010a0   ) begin
+            src_channel = 15'b10000;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 9;
+    end
+
     // ( 0x8001150 .. 0x8001160 )
-    if ( {address[RG:PAD2],{PAD2{1'b0}}} == 28'h8001150   ) begin
-            src_channel = 15'b0100;
+    if ( {address[RG:PAD3],{PAD3{1'b0}}} == 28'h8001150   ) begin
+            src_channel = 15'b00100;
             src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 7;
     end
 
     // ( 0x8001170 .. 0x8001178 )
-    if ( {address[RG:PAD3],{PAD3{1'b0}}} == 28'h8001170  && read_transaction  ) begin
-            src_channel = 15'b0001;
+    if ( {address[RG:PAD4],{PAD4{1'b0}}} == 28'h8001170  && read_transaction  ) begin
+            src_channel = 15'b00001;
             src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 10;
     end
 
